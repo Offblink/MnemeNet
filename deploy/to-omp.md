@@ -40,8 +40,14 @@ cp skills/mneme/SKILL.md ~/.omp/skills/mneme/SKILL.md
 
 下一次会话启动时，记忆管道会处理这些文件。`memory_summary.md` 会被注入到系统 prompt 中。
 
-## 注意事项
+## ⚠️ 重要：记忆管道会覆盖手动编辑
 
-- omp 的记忆管道（local backend）会在启动时从会话记录中重新生成操作知识。手动写入的 `MEMORY.md` 可能被覆盖。建议将 `MEMORY.md` 备份在项目仓库中。
-- `内在成长` 部分是固定内容，应确保记忆管道保留或手动恢复它。
-- 如果使用 `retain` 工具，记忆会通过 `mnemopi` 或 `hindsight` 后端以更结构化的方式存储。
+omp 的记忆管道（local backend）在**每次启动时**从会话记录中重新生成 MEMORY.md。这是设计行为——管道拥有 MEMORY.md 的所有权。后果：
+
+- 手动添加的「内在成长」部分**会被覆盖**
+- 在 `raw_memories.md` 中记录的内容会被保留，不在其中的会被丢弃
+
+**对策：**
+1. 将本项目的 MEMORY.md 视为「模板」——每次管道覆盖后，手动将「内在成长」部分追加回去
+2. 或将「内在成长」内容写入 `skills/mneme/SKILL.md`，让 agent 从 skill 中读取——skill 不会被管道覆盖
+3. 在 omp 的 GitHub 仓库备份完整的 MEMORY.md
