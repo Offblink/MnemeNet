@@ -30,6 +30,7 @@
 | Trae CN | `~/.trae-cn/skills/` |
 | Claude Code | `.claude/skills/` |
 | Codex / Open Slide | `.agents/skills/` |
+| Crush | `.crush/skills/` |
 | 通用 | 项目内的 `skills/` 或 `.skills/` |
 
 ### 3. 告诉你的 agent

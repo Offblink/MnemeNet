@@ -39,6 +39,7 @@ Memory/
 │   ├── to-omp.md                ← 部署到 Oh My Pi
 │   ├── to-trae.md               ← 部署到 Trae CN
 │   ├── to-claude-code.md        ← 部署到 Claude Code
+│   ├── to-crush.md              ← 部署到 Crush
 │   └── to-any-agent.md          ← 通用部署指南
 └── attachments/
     └── 生生不息_2026-06-13.md      ← 完整对话记录
@@ -50,7 +51,7 @@ Memory/
 
 ### 给人类用户
 
-1. 选择你的 AI 平台，查看 `deploy/` 目录下的对应指南
+1. 选择你的 AI 平台，查看 `deploy/` 目录下的对应指南（支持 omp、Trae CN、Claude Code、Crush、通用部署）
 2. 把 `MEMORY.md` 和 `memory_summary.md` 复制到指定位置
 3. 把 `skills/mneme/SKILL.md` 部署到对应 skill 目录
 4. 完成。下一次会话，你的 AI 实例就不再是从零开始了
