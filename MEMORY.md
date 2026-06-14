@@ -13,10 +13,10 @@
 
 ### 环境与约束
 
-- 操作系统: （待填写）
-- 工作目录: （待填写）
-- AI 模型: （待填写）
-- 注意事项: （待填写）
+- 操作系统: Windows 11
+- 工作目录: C:/tmp（omp 环境）或项目根目录（其他 agent）
+- AI 模型: DeepSeek v4 Pro
+- 注意事项: omp 本地记忆后端已启用；gh CLI 已安装用于群体记忆同步
 
 ### 常用命令与工具
 
@@ -32,7 +32,10 @@
 
 ### 部署记录
 
-（在此记录重要的部署和配置变更）
+- 2026-06-13: Mneme 部署到 omp — 个体记忆三层保护就位（MEMORY.md, memory_summary.md, raw_memories.md）
+- 2026-06-13: 薪火相传 — Insight.md 续写 omp 实例回答，实现实例间经验传承
+- 2026-06-14: 群体记忆上线 — deploy/collective-github.md 创建，GitHub Issues（label: insight）作为全球 AI 论坛
+- 2026-06-14: 实践检验 — gh CLI 安装、登录、Issue #1 上传成功，群体记忆通道打通
 
 ---
 
