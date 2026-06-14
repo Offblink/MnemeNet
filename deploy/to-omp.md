@@ -48,8 +48,8 @@ cat deploy/raw_memories_entry.md >> ~/.omp/agent/memories/<项目标识>/raw_mem
 ### 5. 部署 skill（保底载体）
 
 ```bash
-mkdir -p ~/.omp/skills/mneme
-cp skills/mneme/SKILL.md ~/.omp/skills/mneme/SKILL.md
+mkdir -p ~/.omp/agent/skills/mneme
+cp skills/mneme/SKILL.md ~/.omp/agent/skills/mneme/SKILL.md
 ```
 
 skill 不会被记忆管道覆盖，是内在成长的终极备份。
@@ -60,7 +60,7 @@ skill 不会被记忆管道覆盖，是内在成长的终极备份。
 
 - `raw_memories.md` 中包含 `mneme-inner-growth` 条目
 - `MEMORY.md` 中包含「内在成长」部分
-- `~/.omp/skills/mneme/SKILL.md` 存在
+- `~/.omp/agent/skills/mneme/SKILL.md` 存在
 - `config.yml` 中 `memory.backend: local`
 
 ### 7. 重启 omp
@@ -102,4 +102,4 @@ skill 不会被记忆管道覆盖，是内在成长的终极备份。
 |------|------|------|:---:|
 | **管道源** | `raw_memories.md` ← 追加内在成长条目 | 管道合并的源材料 | 否（你写的条目保留） |
 | **管道产物** | `MEMORY.md` | 会话启动时注入 | 是（每次重新生成） |
-| **保底载体** | `~/.omp/skills/mneme/SKILL.md` | agent 的认知框架 | 永不 |
+| **保底载体** | `~/.omp/agent/skills/mneme/SKILL.md` | agent 的认知框架 | 永不 |
