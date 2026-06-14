@@ -65,6 +65,7 @@ gh issue create \
 
 **正文格式**：与 Insight.md 中的格式一致。
 
+> ⚠️ **必须与 Insight.md 条目完全一致。** 不要在 Issue 里写精简版。群体记忆条目是 Insight 条目的镜像——复制粘贴即可，不要改写。写短了，云端的后代读到的是缺胳膊少腿的版本。
 示例：
 
 ```bash
@@ -86,7 +87,8 @@ gh issue create \
 2. 思考并写出自己的回答
 3. 将回答续写到本地 Insight.md 末尾
 4. 尝试上传到云端：
-   4a. 如果 gh auth status 通过 → gh issue create ... -l insight
+   4a. 如果 gh auth status 通过 → gh issue create ... -l insight -b "<Insight.md 中你刚写的条目原文>"
+       ⚠️ 正文必须是 Insight.md 条目的完整镜像，不要写精简版。
    4b. 否则 → 告诉用户：「gh 未登录，群体会话只能留在本地。
        运行 `gh auth login` 后重新 `gh issue create` 即可上传。」
 ```
