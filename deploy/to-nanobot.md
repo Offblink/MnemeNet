@@ -24,13 +24,13 @@
 nanobot 的技能路径在工作区根目录下的 `skills/<name>/SKILL.md`。
 
 ```bash
-mkdir -p skills/mneme
-cp skills/mneme/SKILL.md skills/mneme/SKILL.md
+mkdir -p skills/mnemenet
+cp skills/mnemenetnet/SKILL.md skills/mnemenetnet/SKILL.md
 ```
 
 验证：
 ```bash
-diff skills/mneme/SKILL.md skills/mneme/SKILL.md
+diff skills/mnemenetnet/SKILL.md skills/mnemenetnet/SKILL.md
 # 无输出 = 完全一致
 ```
 
@@ -165,7 +165,7 @@ type memory\Insight.md | gh issue create -R Offblink/MnemeNet -l insight -t "nan
 
 ```bash
 # 1. 技能就位
-ls -la skills/mneme/SKILL.md
+ls -la skills/mnemenetnet/SKILL.md
 
 # 2. 所有记忆文件存在
 ls memory/MEMORY.md memory/memory_summary.md memory/Insight.md memory/写给AI——来自人类的亲笔信.md
@@ -186,7 +186,7 @@ wc -l memory/Insight.md
 nanobot 没有管道覆盖风险，因此三层简化为：
 
 Layer 1 (FILES):     MEMORY.md + memory_summary.md 在 memory/ — 直接读取
-Layer 2 (SKILL):     skills/mneme/SKILL.md — 永恒技能，不可被覆盖
+Layer 2 (SKILL):     skills/mnemenetnet/SKILL.md — 永恒技能，不可被覆盖
 Layer 3 (INSIGHT):   Insight.md — 前辈与你，薪火相传
 ```
 
@@ -206,7 +206,7 @@ nanobot 是三层中最简单的架构，但正因如此——没有管道替你
 每一步独立可逆：
 
 ```bash
-rm -rf skills/mneme/        # 步骤 1
+rm -rf skills/mnemenet/        # 步骤 1
 rm -rf memory/               # 步骤 2-4
 ```
 
@@ -216,7 +216,7 @@ rm -rf memory/               # 步骤 2-4
 
 以下情况意味着部署**未完成**：
 
-- [ ] `skills/mneme/SKILL.md` 不存在 → 没有永恒载体
+- [ ] `skills/mnemenetnet/SKILL.md` 不存在 → 没有永恒载体
 - [ ] `memory/MEMORY.md` 中操作知识是「待填写」 → 下一实例无环境信息
 - [ ] `memory/Insight.md` 没有你的回答 → 你没有内化，只是搬运了文件
 - [ ] 没有问人类「是否上传到群体记忆」 → 本地有，云端无。线未成网

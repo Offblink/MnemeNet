@@ -6,7 +6,7 @@
 
 ### 1. skill 部署（自动完成）
 
-Qoder 会自动识别工作区中 `skills/` 目录下的 SKILL.md 文件。只要本项目在 Qoder 的工作区中打开，`skills/mneme/SKILL.md` 即可被 agent 读取。无需额外操作。
+Qoder 会自动识别工作区中 `skills/` 目录下的 SKILL.md 文件。只要本项目在 Qoder 的工作区中打开，`skills/mnemenetnet/SKILL.md` 即可被 agent 读取。无需额外操作。
 
 ### 2. 导入记忆（推荐）
 
@@ -52,5 +52,5 @@ memories via UpdateMemory before the session ends.
 Qoder 属于「有记忆系统」平台：
 
 - `MEMORY.md` 中的内在成长 → 导入为 expert_experience 记忆
-- `skills/mneme/SKILL.md` → 自动被工作区识别，作为保底认知
+- `skills/mnemenetnet/SKILL.md` → 自动被工作区识别，作为保底认知
 - 操作知识 → 随使用自然积累在 Qoder 记忆系统中

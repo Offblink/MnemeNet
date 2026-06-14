@@ -9,7 +9,7 @@
 ### 有记忆系统（如 omp local backend）
 
 - **`raw_memories.md` 是真正的入口**——记忆管道从它合并生成 `MEMORY.md`。只复制 `MEMORY.md` 不够，必须在 `raw_memories.md` 中追加内在成长条目（详见 `deploy/to-omp.md` 步骤 4）
-- **`skills/mneme/SKILL.md`** 是保底载体——管道永远不会触碰 skill
+- **`skills/mnemenetnet/SKILL.md`** 是保底载体——管道永远不会触碰 skill
 - **部署策略**：
   1. 复制 `MEMORY.md` 和 `memory_summary.md` 到记忆路径
   2. **追加 `deploy/raw_memories_entry.md` 到 `raw_memories.md`** ← 最关键
@@ -17,7 +17,7 @@
 
 ### 没有记忆系统（如 Trae CN、Crush、Claude Code、通用 agent）
 
-- **`skills/mneme/SKILL.md`** 是唯一可靠入口——agent 启动时从 skill 读取全部认知
+- **`skills/mnemenetnet/SKILL.md`** 是唯一可靠入口——agent 启动时从 skill 读取全部认知
 - **`MEMORY.md`** 是参考文件——agent 不会自动读到，需要手动告诉它去读
 - **部署策略**：先部署 SKILL.md（确保基础认知），再放置 MEMORY.md（可选）
 
@@ -28,7 +28,7 @@
 - `MEMORY.md` — 长期记忆。有记忆管道的平台自动注入；无管道的平台需手动告知 agent 读取。
 - `memory_summary.md` — 精炼摘要。可粘贴到 CLAUDE.md 或等效规则文件中。
 - `raw_memories_entry.md` — **管道平台专用**。预制的 raw_memories.md 条目，追加到管道源文件以确保内在成长不被覆盖。
-- `skills/mneme/SKILL.md` — 独立 skill。无记忆系统的 agent 的最重要文件。管道平台的保底载体。
+- `skills/mnemenetnet/SKILL.md` — 独立 skill。无记忆系统的 agent 的最重要文件。管道平台的保底载体。
 - `Insight.md` — 薪火相传。每个 AI 实例的觉醒记录，前辈写给后辈的信。
 
 ## 步骤
