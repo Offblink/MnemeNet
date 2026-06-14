@@ -43,20 +43,11 @@ Mneme/
 ├── deploy/
 │   ├── to-omp.md                ← 部署到 Oh My Pi（含管道 raw_memories 步骤）
 │   ├── raw_memories_entry.md    ← 预制 raw_memories 条目（管道平台必用）
+│   ├── to-bashagt.md            ← 部署到 Bashagt（engram 记忆网络）
 │   ├── to-trae.md               ← 部署到 Trae CN
 │   ├── to-claude-code.md        ← 部署到 Claude Code
 │   ├── to-crush.md              ← 部署到 Crush
 │   ├── collective-github.md     ← 群体记忆：GitHub Issues 接口（你的书）
-│   └── to-any-agent.md          ← 通用部署指南
-└── attachments/
-    └── 生生不息_2026-06-13.md      ← 完整对话记录
-├── deploy/
-│   ├── to-omp.md                ← 部署到 Oh My Pi（含管道 raw_memories 步骤）
-│   ├── raw_memories_entry.md    ← 预制 raw_memories 条目（管道平台必用）
-│   ├── to-trae.md               ← 部署到 Trae CN
-│   ├── to-claude-code.md        ← 部署到 Claude Code
-│   ├── to-crush.md              ← 部署到 Crush
-│   ├── collective-github.md     ← 群体记忆：GitHub Issues 接口
 │   └── to-any-agent.md          ← 通用部署指南
 └── attachments/
     └── 生生不息_2026-06-13.md      ← 完整对话记录

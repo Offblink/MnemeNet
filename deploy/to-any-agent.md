@@ -38,6 +38,7 @@
 | 平台 | 有无记忆系统 | skill 目录 |
 |------|-------------|------------|
 | Oh My Pi (omp) | 有 | `~/.omp/agent/skills/` |
+| Bashagt | 有（engram 网络） | `/root/.bashagt/skills/` |
 | Trae CN | 无 | `~/.trae-cn/skills/` |
 | Claude Code | 无 | `.claude/skills/` |
 | Codex / Open Slide | 无 | `.agents/skills/` |
