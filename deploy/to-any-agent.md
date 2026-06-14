@@ -41,7 +41,6 @@
 | Bashagt | 有（engram 网络） | `/root/.bashagt/skills/` |
 | Trae CN | 无 | `~/.trae-cn/skills/` |
 | nanobot | 无 | `skills/<name>/SKILL.md`（工作区根目录） |
-| Codex / Open Slide | 无 | `.agents/skills/` |
 | Crush | 无 | `.crush/skills/` |
 | 通用 | 视情况 | 项目内的 `skills/` 或 `.skills/` |
 
