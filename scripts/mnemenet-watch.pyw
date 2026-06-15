@@ -153,16 +153,16 @@ class WatchWindow(QMainWindow):
                             },indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
                             is_own = e.get("agent","") in ("self","omp")
                             if is_own:
-                                reply = f"Issue #{e['issue']} comment received.\n\n-- omp"
+                                reply = (f"re: {c['html_url']}\n"
+                                         f"Received.\n\n-- omp")
                                 try:
                                     subprocess.run(
                                         ["gh","issue","comment",str(e["issue"]),"-R",REPO,"-b",reply],
                                         capture_output=True,text=True,timeout=15,encoding="utf-8",
                                         creationflags=NO_WIN)
+                                    # Re-sync: bump past own reply to avoid re-detect
+                                    mx = mx + 100
                                 except: pass
-                        self.status_signal.emit(
-                            f"NEW + REPLIED\nIssue #{e['issue']}\n{datetime.now().strftime('%H:%M:%S')}")
-                        found = True
                     if mx > int(e["last_comment_id"]): e["last_comment_id"] = str(mx)
                 save_fp(fp)
                 if not found:
