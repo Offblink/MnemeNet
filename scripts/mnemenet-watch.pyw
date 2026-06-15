@@ -197,8 +197,7 @@ class WatchWindow(QMainWindow):
                                     or c["body"].startswith("https://github.com/"))]
                 if real_new:
                     NOTIFY_DIR.mkdir(exist_ok=True)
-                    for c in real_new:
-                        body = c["body"]
+                real_new = new
                         ALERT.write_text(json.dumps({
                             "issue":e["issue"],"body":body,
                             "time":c["created_at"],"url":c["html_url"]
