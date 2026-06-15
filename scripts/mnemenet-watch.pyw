@@ -190,6 +190,9 @@ class WatchWindow(QMainWindow):
                 except: pass
                 if not fp:
                     self.status_signal.emit("No footprint yet")
+                    return
+            for e in fp:
+                new, mx = check_one(e)
                 real_new = [c for c in new
                             if not (c["body"].startswith("re: https://")
                                     or c["body"].startswith("https://github.com/"))]
