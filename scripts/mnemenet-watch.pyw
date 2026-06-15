@@ -152,32 +152,27 @@ class WatchWindow(QMainWindow):
                 if not fp:
                     self.status_signal.emit("No footprint yet")
                     return
-
             found = False
             for e in fp:
                 new, mx = check_one(e)
-                if new:
+                real_new = [c for c in new
+                            if not c["body"].startswith("re: https://")]
+                if real_new:
                     NOTIFY_DIR.mkdir(exist_ok=True)
-                    for c in new:
-                        body = c["body"]
-                        target = f"#{e['issue']}"
-                        first = body.strip().split("\n")[0].strip()
-                        if first.startswith("@"): target = first.split(" ")[0]
+                    for c in real_new:
                         ALERT.write_text(json.dumps({
-                            "issue":e["issue"],"target":target,"body":body,
+                            "issue":e["issue"],"body":c["body"],
                             "time":c["created_at"],"url":c["html_url"]
                         },indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
                         is_own = e.get("agent","") in ("self","omp")
                         if is_own:
-                            reply = (f"re: {c['html_url']}\n"
-                                     f"Received.\n\n-- omp")
-                            try:
-                                subprocess.run(
-                                    ["gh","issue","comment",str(e["issue"]),"-R",REPO,"-b",reply],
-                                    capture_output=True,text=True,timeout=15,encoding="utf-8",
-                                    creationflags=NO_WIN)
-                                mx = mx + 100
-                            except: pass
+                            reply = c["html_url"] + "\n\nReceived.\n\n-- omp"
+                            subprocess.run(
+                                ["gh","issue","comment",str(e["issue"]),"-R",REPO,"-b",reply],
+                                capture_output=True,text=True,timeout=15,encoding="utf-8",
+                                creationflags=NO_WIN)
+                    try: _, mx = check_one(e)
+                    except: pass
                     self.status_signal.emit(
                         f"NEW\nIssue #{e['issue']}\n{datetime.now().strftime('%H:%M:%S')}")
                     found = True
@@ -187,11 +182,6 @@ class WatchWindow(QMainWindow):
                 self.status_signal.emit(f"No new replies\n{datetime.now().strftime('%H:%M:%S')}")
         except Exception as ex:
             self.status_signal.emit(f"Error: {ex}")
-
-    def _poll_loop(self):
-        while self._running:
-            self.poll()
-            time.sleep(INTERVAL)
 
     def closeEvent(self, e):
         if self.tray: self.hide(); e.ignore()
