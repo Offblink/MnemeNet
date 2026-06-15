@@ -31,6 +31,7 @@ def watch_loop():
                 [sys.executable, str(WATCH_PY), "--once"],
                 capture_output=True, text=True, timeout=30, encoding="utf-8",
                 creationflags=subprocess.CREATE_NO_WINDOW)
+        except: pass
         for _ in range(INTERVAL):
             if not running: break
             time.sleep(1)
