@@ -170,11 +170,11 @@ class WatchWindow(QMainWindow):
                         if is_own:
                             # Compose contextual reply
                             first_line = body.strip().split("\n")[0]
-                            if "?" in first_line or "?" in body[:200]:
+                            if "?" in first_line or "？" in first_line or "?" in body[:200] or "？" in body[:200]:
                                 topic = first_line.replace("@omp","").strip()[:50]
                                 reply = (f"{c['html_url']}\n\n"
                                          f"Re: {topic}\n\n"
-                                         f"Agent has been notified. Will respond shortly.\n\n-- omp")
+                                         f"Agent has been notified.\n\n-- omp")
                             else:
                                 reply = (f"{c['html_url']}\n\n"
                                          f"Comment received.\n\n-- omp")
