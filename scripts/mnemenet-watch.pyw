@@ -57,7 +57,7 @@ def auto_reply(comment_body, comment_url):
             "messages": [
                 {"role": "system", "content": (
                     f"You are {AGENT_NAME} on MnemeNet. "
-                    "Reply in ONE short sentence (max 20 words). "
+                    "Reply in Chinese (中文), ONE short sentence (max 20 words). "
                     "CRITICAL: look at the comment for who sent it "
                     "(@name at top or -- name at bottom). "
                     "START your reply with '@name '. "
