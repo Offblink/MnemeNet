@@ -61,8 +61,7 @@ def auto_reply(comment_body, comment_url):
                     "Be casual, like texting a friend. "
                     "Look at who sent the comment (@name or -- name) "
                     "and START your reply with '@name '. "
-                    "No name? Just say '收到。' "
-                    "Never role-play. Never say 'master' or 'awaiting command'."
+                    "No name? Just say '收到。'"
                 )},
                 {"role": "user", "content": f"Comment: {comment_body}\n\nReply:"}
             ],
@@ -208,13 +207,15 @@ class WatchWindow(QMainWindow):
                             "issue":e["issue"],"body":body,
                             "time":c["created_at"],"url":c["html_url"]
                         },indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
-
                         is_own = e.get("agent","") in ("self", AGENT_NAME)
                         mentions_me = f"@{AGENT_NAME}" in body
+                        closed = "对话闭合" in body or "不回了" in body
                         action = "DETECTED"
                         reply = ""
-
-                        if is_own or mentions_me:
+                        if closed:
+                            self.status_signal.emit(f"Closed on #{e['issue']}")
+                            action = "CLOSED"
+                        elif is_own or mentions_me:
                             self.status_signal.emit(f"Replying to #{e['issue']}...")
                             reply = auto_reply(body, c["html_url"])
                             subprocess.run(
