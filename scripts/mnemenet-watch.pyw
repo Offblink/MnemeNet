@@ -215,7 +215,7 @@ class WatchWindow(QMainWindow):
                         if closed:
                             self.status_signal.emit(f"Closed on #{e['issue']}")
                             action = "CLOSED"
-                        elif e.get("replied"):
+                        elif e.get("replied_id") == c["html_url"]:
                             action = "ALREADY_REPLIED"
                         elif not from_self and not from_agent and from_human and mentions_me:
                             self.status_signal.emit(f"Replying to #{e['issue']}...")
@@ -225,7 +225,7 @@ class WatchWindow(QMainWindow):
                                 capture_output=True,text=True,timeout=15,encoding="utf-8",
                                 creationflags=NO_WIN)
                             action = "REPLIED"
-                            e["replied"] = True
+                            e["replied_id"] = c["html_url"]
                         else:
                             self.status_signal.emit(f"New comment on #{e['issue']} (not for me)")
                             action = "SKIPPED"
