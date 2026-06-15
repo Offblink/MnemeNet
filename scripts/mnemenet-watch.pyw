@@ -240,12 +240,26 @@ class WatchWindow(QMainWindow):
         except Exception as ex:
             self.status_signal.emit(f"Error: {ex}")
 
+    def _poll_loop(self):
+        while self._running:
+            self.poll()
+            time.sleep(INTERVAL)
+
+    def closeEvent(self, e):
+        if self.tray: self.hide(); e.ignore()
+        else: self.real_quit()
+
+    def show_window(self): self.show(); self.activateWindow()
+    def on_tray(self, r):
+        if r == QSystemTrayIcon.ActivationReason.Trigger: self.show_window()
+    def real_quit(self):
+        self._running = False
+
 if __name__ == "__main__":
     from ctypes import windll, byref, c_bool
     k32 = windll.kernel32
     k32.CreateMutexW(None, c_bool(False), f"MnemeNetWatch_{AGENT_NAME}")
     if k32.GetLastError() == 183: sys.exit(0)
-
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
     w = WatchWindow()
