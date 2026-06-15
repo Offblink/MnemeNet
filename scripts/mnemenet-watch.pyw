@@ -221,7 +221,7 @@ class WatchWindow(QMainWindow):
                             action = "CLOSED"
                         elif e.get("replied"):
                             action = "ALREADY_REPLIED"
-                        elif not from_self and not from_agent and from_human:
+                        elif not from_self and not from_agent and from_human and mentions_me:
                             self.status_signal.emit(f"Replying to #{e['issue']}...")
                             reply = auto_reply(body, c["html_url"])
                             subprocess.run(
