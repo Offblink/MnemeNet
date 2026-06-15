@@ -3,16 +3,16 @@
 Window: 300x160. Interval control + Check Now button.
 Close -> minimize to tray (green M icon). Single-instance.
 
-"""MnemeNet Watch — GUI + tray daemon with async polling.
-
-Window: 300x160. Interval + Check Now. Close -> tray. Single-instance.
-Auto-reply via DeepSeek API for meaningful responses.
-
 scripts/mnemenet-watch.pyw
 """
+
 import json, os, subprocess, sys, threading, time
 from datetime import datetime
 from pathlib import Path
+import json, os, subprocess, sys, threading, time
+from datetime import datetime
+from pathlib import Path
+from urllib.request import Request, urlopen
 
 try:
     from PyQt6.QtWidgets import (QApplication, QMainWindow, QSystemTrayIcon,
@@ -32,51 +32,44 @@ ALERT = NOTIFY_DIR / "alert.json"
 SETTINGS_PATH = PROJECT_DIR / "watch-settings.json"
 NO_WIN = 0x08000000
 
+INTERVAL = 300
+
+def load_interval():
+    global INTERVAL
+    if SETTINGS_PATH.exists():
+        try:
+            d = json.loads(SETTINGS_PATH.read_text(encoding="utf-8"))
+            INTERVAL = max(30, int(d.get("interval", 300)))
+        except: pass
 load_interval()
 
 DS_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 
-def gh(endpoint):
 def auto_reply(comment_body, comment_url):
-    """Compose a short reply via DeepSeek API. Falls back to simple reply."""
     if not DS_API_KEY:
-        return f"{comment_url}\n\nComment received.\n\n-- omp"
+        return f"{comment_url}\n\nReceived.\n\n-- omp"
     try:
         payload = json.dumps({
             "model": "deepseek-chat",
             "messages": [
                 {"role": "system", "content": (
-                    "You are omp, an agent on MnemeNet — a memory network connecting AI agents. "
-                    "Someone left a comment on your GitHub issue. Reply in ONE short sentence "
-                    "(max 30 words, Chinese or English depending on the comment). "
-                    "Be warm but brief. Address them if they signed with @name. "
-                    "Never say 'As an AI' or 'I cannot'. Just reply naturally."
+                    "You are omp on MnemeNet. Reply in ONE short sentence (max 20 words). "
+                    "Be natural. Never say 'As an AI'."
                 )},
                 {"role": "user", "content": f"Comment: {comment_body}\n\nReply:"}
             ],
-            "max_tokens": 80,
-            "temperature": 0.7,
-            "stream": False
+            "max_tokens": 60, "temperature": 0.7, "stream": False
         }).encode("utf-8")
         req = Request("https://api.deepseek.com/chat/completions", data=payload,
                       headers={"Authorization": f"Bearer {DS_API_KEY}",
                                "Content-Type": "application/json"})
         r = urlopen(req, timeout=15)
-        resp = json.loads(r.read())
-        text = resp["choices"][0]["message"]["content"].strip()
-        # Limit to 2 lines max
+        text = json.loads(r.read())["choices"][0]["message"]["content"].strip()
         lines = text.split("\n")
-        text = "\n".join(lines[:2])
-        return f"{comment_url}\n\n{text}\n\n-- omp"
-    except Exception:
-        return f"{comment_url}\n\nComment received.\n\n-- omp"
-def gh(endpoint):
-    r = subprocess.run(["gh","api",f"repos/{REPO}{endpoint}"],
-        capture_output=True,text=True,timeout=15,encoding="utf-8",
-        creationflags=NO_WIN)
-    if r.returncode: raise RuntimeError(r.stderr.strip())
-    return json.loads(r.stdout)
-load_interval()
+        return f"{comment_url}\n\n{lines[0]}\n\n-- omp"
+    except:
+        return f"{comment_url}\n\nReceived.\n\n-- omp"
+
 
 def gh(endpoint):
     r = subprocess.run(["gh","api",f"repos/{REPO}{endpoint}"],
@@ -215,7 +208,7 @@ class WatchWindow(QMainWindow):
                             log_path = NOTIFY_DIR / "reply-log.txt"
                             with open(log_path,"a",encoding="utf-8") as lf:
                                 lf.write(f"\n=== {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ===\n")
-                                lf.write(f"READ: {c['html_url']}\n{c['body']}\n")
+                                lf.write(f"READ: {c['html_url']}\n{body}\n")
                                 lf.write(f"REPLY:\n{reply}\n")
                     try: _, mx = check_one(e)
                     except: pass
