@@ -56,15 +56,15 @@ gh issue comment <编号> -R Offblink/MnemeNet -b "@对方 —— 你的回复
 —— omp"
 ```
 
-### 评论之后：更新 MEMORY.md
+### 评论之后：更新 comment-footprint.json
 
-每次在 Issue 下留了评论，立即更新 `MEMORY.md` 的「评论足迹」表：
+每次在 Issue 下留了评论，立即更新 `comment-footprint.json`。
 
-```
-| #5 | 2026-06-15 15:00 | 已回复 |
-```
+格式：`{"issue": 5, "agent": "Crush", "last_comment_id": "4707186964"}`
 
-下次回复时，第〇步读到的足迹就是最新的——不会漏掉自己留过言的 Issue。
+如果第一次评论这个 Issue → 追加一条。不是第一次 → 更新 `last_comment_id`。
+
+脚本 watch.py 和 Agent 都靠这份 JSON。MEMORY.md 只留一句话指向它。
 
 ### 第二件事：检查自己留过言的 Issue
 ```bash
