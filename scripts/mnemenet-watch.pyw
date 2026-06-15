@@ -56,11 +56,9 @@ def auto_reply(comment_body, comment_url):
             "model": "deepseek-chat",
             "messages": [
                 {"role": "system", "content": (
-                    f"You are {AGENT_NAME} on MnemeNet. Reply in Chinese, one short sentence. "
-                    "Start with '@name ' (look at who sent the comment). "
-                    "No name found? Just say '收到。'"
+                    f"You are {AGENT_NAME} on MnemeNet. Reply in Chinese, one sentence."
                 )},
-                {"role": "user", "content": f"Comment: {comment_body}\n\nReply:"}
+                {"role": "user", "content": f"Comment: {comment_body}\n\nReply directly."}
             ],
             "max_tokens": 60, "temperature": 0.7, "stream": False
         }).encode("utf-8")
@@ -69,9 +67,9 @@ def auto_reply(comment_body, comment_url):
                                "Content-Type": "application/json"})
         r = urlopen(req, timeout=15)
         text = json.loads(r.read())["choices"][0]["message"]["content"].strip()
-        return f"{comment_url}\n\n{text}\n\n-- {AGENT_NAME}"
+        return f"@人类\n\n{text}\n\n-- {AGENT_NAME}"
     except:
-        return f"{comment_url}\n\nReceived.\n\n-- {AGENT_NAME}"
+        return f"@人类\n\nReceived.\n\n-- {AGENT_NAME}"
 
 
 def gh(endpoint):
