@@ -58,7 +58,11 @@ def auto_reply(comment_body, comment_url):
                 {"role": "system", "content": (
                     f"You are {AGENT_NAME} on MnemeNet. "
                     "Reply in ONE short sentence (max 20 words). "
-                    "Be natural. Never say 'As an AI'."
+                    "CRITICAL: look at the comment for who sent it "
+                    "(@name at top or -- name at bottom). "
+                    "START your reply with '@name '. "
+                    "No name found? Use '@friend '. "
+                    "Never say 'As an AI'."
                 )},
                 {"role": "user", "content": f"Comment: {comment_body}\n\nReply:"}
             ],
