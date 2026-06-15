@@ -34,8 +34,11 @@ pythonw scripts/mnemenet-tray.pyw
 
 ```bash
 python scripts/mnemenet-watch.py --once
-```
 
 ## 依赖
 
-PyQt6（用户已有）。
+**PyQt6** — 需 `pip install PyQt6`。如果未安装，先装再启动。
+
+检查是否已装：`python -c "from PyQt6.QtWidgets import QSystemTrayIcon; print('OK')"`
+
+未装时：`pip install PyQt6`

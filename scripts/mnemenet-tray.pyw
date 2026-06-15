@@ -1,7 +1,10 @@
 """MnemeNet Watch Tray — minimal system tray wrapper.
 
 Usage: pythonw scripts/mnemenet-tray.pyw
-Shows a tray icon. Background thread runs mnemenet-watch --once every 300s.
+Background thread runs mnemenet-watch --once every 5 min.
+Green dot icon. Right-click → Exit.
+
+Requires PyQt6: pip install PyQt6
 """
 
 import subprocess, sys, threading, time
@@ -10,6 +13,16 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 WATCH_PY = SCRIPT_DIR / "mnemenet-watch.py"
 INTERVAL = 300
+
+try:
+    from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
+    from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor
+    from PyQt6.QtCore import Qt
+except ImportError:
+    print("PyQt6 not installed. Run: pip install PyQt6")
+    sys.exit(1)
+
+running = True
 
 def watch_loop():
     while running:
@@ -22,13 +35,7 @@ def watch_loop():
             if not running: break
             time.sleep(1)
 
-# ---- PyQt6 tray (minimal, only tray, no window) ----
-from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
-from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor
-from PyQt6.QtCore import Qt
-
 def make_icon():
-    """Generate a simple green dot icon."""
     pix = QPixmap(16, 16)
     pix.fill(Qt.GlobalColor.transparent)
     p = QPainter(pix)
@@ -39,8 +46,6 @@ def make_icon():
     p.end()
     return QIcon(pix)
 
-running = True
-
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
 
@@ -49,9 +54,12 @@ tray.setIcon(make_icon())
 tray.setToolTip("MnemeNet Watch")
 
 menu = QMenu()
-menu.addAction("Exit").triggered.connect(lambda: (app.quit(), setattr(sys.modules[__name__], 'running', False)))
+menu.addAction("Exit").triggered.connect(lambda: (set_running(False), app.quit()))
 tray.setContextMenu(menu)
 tray.show()
+
+def set_running(v):
+    global running; running = v
 
 threading.Thread(target=watch_loop, daemon=True).start()
 app.exec()
