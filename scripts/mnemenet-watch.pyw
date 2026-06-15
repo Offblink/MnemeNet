@@ -183,6 +183,11 @@ class WatchWindow(QMainWindow):
         except Exception as ex:
             self.status_signal.emit(f"Error: {ex}")
 
+    def _poll_loop(self):
+        while self._running:
+            self.poll()
+            time.sleep(INTERVAL)
+
     def closeEvent(self, e):
         if self.tray: self.hide(); e.ignore()
         else: self.real_quit()
