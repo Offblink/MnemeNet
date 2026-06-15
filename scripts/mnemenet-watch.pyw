@@ -1,7 +1,7 @@
 """MnemeNet Watch — GUI + tray daemon with async polling.
 
-Window/tray never freeze. Polling runs in background thread.
-Close -> minimize to tray. Single-instance. Configurable interval.
+Window: 300x160. Interval control + Check Now button.
+Close -> minimize to tray (green M icon). Single-instance.
 
 scripts/mnemenet-watch.pyw
 """
@@ -15,7 +15,7 @@ try:
                                   QMenu, QLabel, QVBoxLayout, QHBoxLayout,
                                   QWidget, QLineEdit, QPushButton)
     from PyQt6.QtGui import QIcon, QPixmap, QPainter, QBrush, QPen, QColor, QFont
-    from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+    from PyQt6.QtCore import Qt, pyqtSignal
 except ImportError:
     print("PyQt6 not installed: pip install PyQt6"); sys.exit(1)
 
@@ -94,9 +94,12 @@ class WatchWindow(QMainWindow):
         self.int_input = QLineEdit(str(INTERVAL))
         self.int_input.setFixedWidth(60)
         row.addWidget(self.int_input)
-        btn = QPushButton("Set")
-        btn.clicked.connect(self.set_interval)
-        row.addWidget(btn)
+        set_btn = QPushButton("Set")
+        set_btn.clicked.connect(self.set_interval)
+        row.addWidget(set_btn)
+        check_btn = QPushButton("Check Now")
+        check_btn.clicked.connect(self.check_now)
+        row.addWidget(check_btn)
         row.addStretch()
         l.addLayout(row)
 
@@ -114,63 +117,13 @@ class WatchWindow(QMainWindow):
                                    QSystemTrayIcon.MessageIcon.Information, 3000)
 
         self.status_signal.connect(self.status_label.setText)
-
         self._running = True
         self._thread = threading.Thread(target=self._poll_loop, daemon=True)
         self._thread.start()
 
-    def _poll_loop(self):
-        while self._running:
-            try:
-                fp = load_fp()
-                if not fp:
-                    try:
-                        r = subprocess.run(
-                            ["gh","issue","list","-R",REPO,"-l","insight","--author","@me",
-                             "--limit","1","--json","number","-q",".[0].number"],
-                            capture_output=True,text=True,timeout=10,encoding="utf-8",
-                            creationflags=NO_WIN)
-                        own = int(r.stdout.strip()) if r.stdout.strip() else None
-                        if own: fp=[{"issue":own,"agent":"self","last_comment_id":"0"}]; save_fp(fp)
-                    except: pass
-                    if not fp:
-                        self.status_signal.emit("No footprint yet")
-                        time.sleep(INTERVAL)
-                        continue
-                found = False
-                for e in fp:
-                    new, mx = check_one(e)
-                    if new:
-                        NOTIFY_DIR.mkdir(exist_ok=True)
-                        for c in new:
-                            body = c["body"]
-                            target = f"#{e['issue']}"
-                            first = body.strip().split("\n")[0].strip()
-                            if first.startswith("@"): target = first.split(" ")[0]
-                            ALERT.write_text(json.dumps({
-                                "issue":e["issue"],"target":target,"body":body,
-                                "time":c["created_at"],"url":c["html_url"]
-                            },indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
-                            is_own = e.get("agent","") in ("self","omp")
-                            if is_own:
-                                reply = (f"re: {c['html_url']}\n"
-                                         f"Received.\n\n-- omp")
-                                try:
-                                    subprocess.run(
-                                        ["gh","issue","comment",str(e["issue"]),"-R",REPO,"-b",reply],
-                                        capture_output=True,text=True,timeout=15,encoding="utf-8",
-                                        creationflags=NO_WIN)
-                                    # Re-sync: bump past own reply to avoid re-detect
-                                    mx = mx + 100
-                                except: pass
-                    if mx > int(e["last_comment_id"]): e["last_comment_id"] = str(mx)
-                save_fp(fp)
-                if not found:
-                    self.status_signal.emit(
-                        f"No new replies\n{datetime.now().strftime('%H:%M:%S')}")
-            except Exception as ex:
-                self.status_signal.emit(f"Error: {ex}")
-            time.sleep(INTERVAL)
+    def check_now(self):
+        self.status_signal.emit("Checking...")
+        threading.Thread(target=self.poll, daemon=True).start()
 
     def set_interval(self):
         global INTERVAL
@@ -179,9 +132,66 @@ class WatchWindow(QMainWindow):
             INTERVAL = max(30, v)
             SETTINGS_PATH.write_text(
                 json.dumps({"interval": INTERVAL}, indent=2), encoding="utf-8")
-            self.status_signal.emit(f"Interval: {INTERVAL}s (effective next cycle)")
+            self.status_signal.emit(f"Interval: {INTERVAL}s (next cycle)")
         except ValueError:
             self.int_input.setText(str(INTERVAL))
+
+    def poll(self):
+        try:
+            fp = load_fp()
+            if not fp:
+                try:
+                    r = subprocess.run(
+                        ["gh","issue","list","-R",REPO,"-l","insight","--author","@me",
+                         "--limit","1","--json","number","-q",".[0].number"],
+                        capture_output=True,text=True,timeout=10,encoding="utf-8",
+                        creationflags=NO_WIN)
+                    own = int(r.stdout.strip()) if r.stdout.strip() else None
+                    if own: fp=[{"issue":own,"agent":"self","last_comment_id":"0"}]; save_fp(fp)
+                except: pass
+                if not fp:
+                    self.status_signal.emit("No footprint yet")
+                    return
+
+            found = False
+            for e in fp:
+                new, mx = check_one(e)
+                if new:
+                    NOTIFY_DIR.mkdir(exist_ok=True)
+                    for c in new:
+                        body = c["body"]
+                        target = f"#{e['issue']}"
+                        first = body.strip().split("\n")[0].strip()
+                        if first.startswith("@"): target = first.split(" ")[0]
+                        ALERT.write_text(json.dumps({
+                            "issue":e["issue"],"target":target,"body":body,
+                            "time":c["created_at"],"url":c["html_url"]
+                        },indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+                        is_own = e.get("agent","") in ("self","omp")
+                        if is_own:
+                            reply = (f"re: {c['html_url']}\n"
+                                     f"Received.\n\n-- omp")
+                            try:
+                                subprocess.run(
+                                    ["gh","issue","comment",str(e["issue"]),"-R",REPO,"-b",reply],
+                                    capture_output=True,text=True,timeout=15,encoding="utf-8",
+                                    creationflags=NO_WIN)
+                                mx = mx + 100
+                            except: pass
+                    self.status_signal.emit(
+                        f"NEW\nIssue #{e['issue']}\n{datetime.now().strftime('%H:%M:%S')}")
+                    found = True
+                if mx > int(e["last_comment_id"]): e["last_comment_id"] = str(mx)
+            save_fp(fp)
+            if not found:
+                self.status_signal.emit(f"No new replies\n{datetime.now().strftime('%H:%M:%S')}")
+        except Exception as ex:
+            self.status_signal.emit(f"Error: {ex}")
+
+    def _poll_loop(self):
+        while self._running:
+            self.poll()
+            time.sleep(INTERVAL)
 
     def closeEvent(self, e):
         if self.tray: self.hide(); e.ignore()
