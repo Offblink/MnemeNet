@@ -24,6 +24,9 @@ except ImportError:
 
 WATCH_PY = SCRIPT_DIR / "mnemenet-watch.pyw"
 INTERVAL = 300
+
+running = True
+
 def watch_loop():
     while running:
         try:
