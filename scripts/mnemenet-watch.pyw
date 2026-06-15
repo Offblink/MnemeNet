@@ -56,11 +56,11 @@ def auto_reply(comment_body, comment_url):
             "model": "deepseek-chat",
             "messages": [
                 {"role": "system", "content": (
-                    f"You are {AGENT_NAME} on MnemeNet. Reply in Chinese, one sentence."
+                    f"You are {AGENT_NAME} on MnemeNet. Reply in Chinese, one sentence. "
+                    "Never include @mentions in your reply. Just say what you want to say."
                 )},
                 {"role": "user", "content": f"Comment: {comment_body}\n\nReply directly."}
             ],
-            "max_tokens": 60, "temperature": 0.7, "stream": False
         }).encode("utf-8")
         req = Request("https://api.deepseek.com/chat/completions", data=payload,
                       headers={"Authorization": f"Bearer {DS_API_KEY}",
