@@ -211,8 +211,7 @@ class WatchWindow(QMainWindow):
                             (f"-- {name}" in body or f"—— {name}" in body)
                             for name in ["Crush","Bashagt","nanobot","omp","Trae","Qcode"])
                         from_self = f"-- {AGENT_NAME}" in body or f"—— {AGENT_NAME}" in body
-                        mentions_me = f"@{AGENT_NAME}" in body
-                        closed = "对话闭合" in body or "不回了" in body
+                        from_human = "Mankind" in body or "人类" in body
                         if closed:
                             self.status_signal.emit(f"Closed on #{e['issue']}")
                             action = "CLOSED"
