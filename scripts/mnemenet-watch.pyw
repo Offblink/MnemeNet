@@ -193,26 +193,36 @@ class WatchWindow(QMainWindow):
                             if not c["body"].startswith("re: https://")]
                 if real_new:
                     NOTIFY_DIR.mkdir(exist_ok=True)
-                    self.status_signal.emit(f"Replying to #{e['issue']}...")
                     for c in real_new:
                         body = c["body"]
                         ALERT.write_text(json.dumps({
-                            "issue":e["issue"],"body":c["body"],
+                            "issue":e["issue"],"body":body,
                             "time":c["created_at"],"url":c["html_url"]
                         },indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+
                         is_own = e.get("agent","") in ("self", AGENT_NAME)
-                        mentions_me = f"@{AGENT_NAME}" in c["body"]
+                        mentions_me = f"@{AGENT_NAME}" in body
+                        action = "DETECTED"
+                        reply = ""
+
                         if is_own or mentions_me:
                             self.status_signal.emit(f"Replying to #{e['issue']}...")
-                            reply = auto_reply(c["body"], c["html_url"])
+                            reply = auto_reply(body, c["html_url"])
                             subprocess.run(
                                 ["gh","issue","comment",str(e["issue"]),"-R",REPO,"-b",reply],
                                 capture_output=True,text=True,timeout=15,encoding="utf-8",
                                 creationflags=NO_WIN)
-                            log_path = NOTIFY_DIR / "reply-log.txt"
-                            with open(log_path,"a",encoding="utf-8") as lf:
-                                lf.write(f"\n=== {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ===\n")
-                                lf.write(f"READ: {c['html_url']}\n{c['body']}\n")
+                            action = "REPLIED"
+                        else:
+                            self.status_signal.emit(f"New comment on #{e['issue']} (not for me)")
+                            action = "SKIPPED"
+
+                        log_path = NOTIFY_DIR / "reply-log.txt"
+                        with open(log_path,"a",encoding="utf-8") as lf:
+                            lf.write(f"\n=== {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [{action}] ===\n")
+                            lf.write(f"ISSUE: #{e['issue']}\n")
+                            lf.write(f"READ: {c['html_url']}\n{body}\n")
+                            if reply:
                                 lf.write(f"REPLY:\n{reply}\n")
             save_fp(fp)
             if not found:
