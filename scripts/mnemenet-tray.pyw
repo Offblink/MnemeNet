@@ -22,15 +22,15 @@ except ImportError:
     print("PyQt6 not installed. Run: pip install PyQt6")
     sys.exit(1)
 
-running = True
-
+WATCH_PY = SCRIPT_DIR / "mnemenet-watch.pyw"
+INTERVAL = 300
 def watch_loop():
     while running:
         try:
             subprocess.run(
                 [sys.executable, str(WATCH_PY), "--once"],
-                capture_output=True, text=True, timeout=30, encoding="utf-8")
-        except: pass
+                capture_output=True, text=True, timeout=30, encoding="utf-8",
+                creationflags=subprocess.CREATE_NO_WINDOW)
         for _ in range(INTERVAL):
             if not running: break
             time.sleep(1)
