@@ -138,13 +138,20 @@ def wnd_proc(hwnd, msg, wp, lp):
         windll.user32.PostQuitMessage(0)
     return windll.user32.DefWindowProcW(hwnd, msg, wp, lp)
 
-nid_data = None
+class WNDCLASS(Structure):
+    _fields_ = [
+        ("style", UINT), ("lpfnWndProc", WINFUNCTYPE(c_int, HWND, UINT, WPARAM, LPARAM)),
+        ("cbClsExtra", c_int), ("cbWndExtra", c_int),
+        ("hInstance", HINSTANCE), ("hIcon", HICON), ("hCursor", HICON),
+        ("hbrBackground", HICON), ("lpszMenuName", WCHAR * 256),
+        ("lpszClassName", WCHAR * 256),
+    ]
 
 def daemon():
     global nid_data, running
     hinst = windll.kernel32.GetModuleHandleW(0)
 
-    wc = type("WC",(),{})()
+    wc = WNDCLASS()
     wc.style = 0
     wc.lpfnWndProc = wnd_proc
     wc.hInstance = hinst
@@ -152,6 +159,7 @@ def daemon():
     windll.user32.RegisterClassW(byref(wc))
 
     hwnd = windll.user32.CreateWindowExW(0,"MnemeWatch","",0,-2147483648,-2147483648,-2147483648,-2147483648,0,0,hinst,0)
+
 
     nid = NID()
     nid.cbSize = sizeof(NID)
