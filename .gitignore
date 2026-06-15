@@ -1,3 +1,5 @@
 notifications/alert.json
 notifications/*.json
 !notifications/.gitkeep
+notifications/reply-log.txt
+watch-settings.json
