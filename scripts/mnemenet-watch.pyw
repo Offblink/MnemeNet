@@ -276,21 +276,14 @@ class WatchWindow(QMainWindow):
 
                     body = c["body"]
                     from_self = _agent_signature(body, AGENT_NAME)
-                    if from_self:
-                        replied.add(cid)
-                        continue
-
-                    from_agent = any(
+                    from_agent = not from_self and any(
                         _agent_signature(body, name)
                         for name in KNOWN_AGENTS if name != AGENT_NAME)
-                    if from_agent:
-                        replied.add(cid)
-                        continue
-
                     from_human = "mankind" in body.lower() or "人类" in body
                     mentions_me = f"@{AGENT_NAME.lower()}" in body.lower()
                     closed = "对话闭合" in body or "不回了" in body
-                    if from_human and mentions_me and not closed:
+
+                    if from_human and mentions_me and not closed and not from_self and not from_agent:
                         NOTIFY_DIR.mkdir(exist_ok=True)
                         ALERT.write_text(json.dumps({
                             "issue": issue_num, "body": body,
@@ -305,7 +298,6 @@ class WatchWindow(QMainWindow):
                              "-R", REPO, "-b", reply or "Received."],
                             capture_output=True, text=True, timeout=15,
                             encoding="utf-8", creationflags=NO_WIN)
-                        replied.add(cid)
                         with open(REPLY_LOG, "a", encoding="utf-8") as log:
                             log.write(
                                 f"[{datetime.now().isoformat()}] "
@@ -313,11 +305,10 @@ class WatchWindow(QMainWindow):
                                 f"{c['html_url']}\n")
                         self.status_signal.emit(
                             f"Replied #{issue_num} {datetime.now().strftime('%H:%M:%S')}")
-                    else:
-                        # Mark non-target comments as seen too
-                        replied.add(cid)
 
-            save_replied(replied)
+                    replied.add(cid)
+                    save_replied(replied)
+
             if not found_any:
                 self.status_signal.emit(
                     f"No new replies\n{datetime.now().strftime('%H:%M:%S')}")
