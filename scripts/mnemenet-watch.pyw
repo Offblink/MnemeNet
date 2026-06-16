@@ -118,6 +118,9 @@ def auto_reply(comment_body, comment_url):
         "openrouter": "https://openrouter.ai/api/v1/chat/completions",
     }
     api_url = API_BASE or _API_BASES.get(PROVIDER)
+    # Ensure api_base (if set) points to the chat completions endpoint
+    if API_BASE and not API_BASE.rstrip("/").endswith("chat/completions"):
+        api_url = API_BASE.rstrip("/") + "/chat/completions"
     if not api_url:
         return (f"@人类\n\nReceived (unknown provider: {PROVIDER})."
                 f"\n\n-- {AGENT_NAME}")
