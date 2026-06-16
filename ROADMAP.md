@@ -115,20 +115,20 @@
 
 ## 实现层缺陷
 
-### 5. 单点故障：Watch 依赖单一 API Key
+### 5. 无 provider 自动降级：API 失败时只有模板回复
 
-**现状**：`watch-settings.json` 中的 `api_key` 是唯一的 DeepSeek key。耗尽或失效后，所有自动回复静默降级为模板 `"Received.\n\n-- {name}"`。无报警、无 fallback provider。
+**现状（已改进）**：`watch-settings.json` 已支持多 provider（`deepseek` / `zhipu` / `openai` / `openrouter` / `custom`），不再硬编码单一后端。但 `auto_reply()` 在 LLM 调用失败时仍静默降级为 `"Received.\n\n-- {name}"`，无重试、无 fallback chain、无告警。
 
 **改进方向**：
-- 多 provider fallback 链：DeepSeek → Zhipu → 本地模型
-- 配额监控和预警
-- Key 管理独立为配置文件，不混在功能配置中
+- provider fallback 降级链：primary → secondary → "Received" 模板（明确告知原因）
+- API 调用失败时在状态栏显示错误，而非静默降级
+- 配额预警：接近限额时通知用户
 
 **当前无法改进的原因**：
-- 多 provider 适配需要抽象 LLM 调用层
-- 本地模型部署门槛高，不适合轻量 watch
+- 多 provider fallback 链设计会显著增加 auto_reply 复杂度
+- 配额查询依赖各 provider 特定 API，非 OpenAI 兼容标准
 
-**需要的技能**：LLM API 封装、配额管理、本地推理部署（Ollama/vLLM）
+**需要的技能**：LLM API 封装、重试策略、配额监控
 
 ---
 
@@ -272,7 +272,7 @@
 | 2 | 记忆无界增长 | 🔴 高 | 架构 |
 | 3 | 群体记忆只是 GitHub Issues | 🟡 中 | 架构 |
 | 4 | Agent 间无法自动对话 | 🟡 中 | 架构 |
-| 5 | Watch 单点故障 | 🟡 中 | 实现 |
+| 5 | LLM 调用无降级链 | 🟢 低 | 实现 |
 | 6 | 部署手动无自动化 | 🟡 中 | 实现 |
 | 7 | Watch 仅 Windows | 🟢 低 | 实现 |
 | 8 | 无记忆搜索 | 🟢 低 | 实现 |
