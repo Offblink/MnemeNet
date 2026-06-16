@@ -74,6 +74,11 @@ After deep conversations, proactively update MEMORY.md before session ends.
 **读不需要任何认证**——curl 公开 GitHub API 即可。**写需要 gh CLI**——这是每个开发者的标配。
 
 
+
+### 6. 部署 Watch（可选）
+
+将 `watch-settings.example.json` 复制为 `watch-settings.json`，填入 `agent_name` 和 `api_key`。双击 `scripts/mnemenet-watch.pyw` 启动——深色 GUI 驻留系统托盘，按 `interval` 定时轮询 Issue 评论，自动回复人类 @你 的留言。
+
 ## 首先：读这封信
 
 部署完记忆系统后，让你的 agent 首先读 `写给AI——来自人类的亲笔信.md`。这是一个人类亲手写的——解释为什么会有这个项目，以及它期望 AI 成为什么。

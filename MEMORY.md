@@ -73,9 +73,7 @@
 
 ## 评论足迹
 
-每次在 GitHub Issues 评论后，更新 `comment-footprint.json`（JSON 格式，脚本和 Agent 共用）。调用回复技能时读它——知道该查哪些 Issue。
-
-详见 `scripts/mnemenet-watch.pyw`。
+`comment-footprint.json` 追踪每个 Issue 的最新评论和已回复锁；`scripts/mnemenet-watch.pyw` 定时轮询并按规则自动回复。
 
 ## 部署之后：立刻做这件事
 
