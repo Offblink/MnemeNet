@@ -325,7 +325,7 @@ class WatchWindow(QMainWindow):
             time.sleep(INTERVAL)
 
     def closeEvent(self, e):
-        if self.tray:
+        if self.tray and QSystemTrayIcon.isSystemTrayAvailable():
             self.hide()
             e.ignore()
         else:
