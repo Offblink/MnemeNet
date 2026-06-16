@@ -4,7 +4,7 @@ Window: 340x200. Interval control + Check Now button.
 Dark theme (Catppuccin Mocha). Close → minimize to tray (green M icon).
 Single-instance per agent name.
 """
-import json, os, subprocess, sys, threading, time
+import json, os, subprocess, sys, threading, time, traceback
 from datetime import datetime
 from pathlib import Path
 from urllib.request import Request, urlopen
@@ -317,7 +317,8 @@ class WatchWindow(QMainWindow):
                 self.status_signal.emit(
                     f"No new replies\n{datetime.now().strftime('%H:%M:%S')}")
         except Exception as ex:
-            self.status_signal.emit(f"Error: {ex}")
+            tb = traceback.format_exc()
+            self.status_signal.emit(f"Error: {ex}\n{tb[-200:]}")
 
     def _poll_loop(self):
         while self._running:
