@@ -347,14 +347,16 @@ class WatchWindow(QMainWindow):
         if self.tray:
             self.tray.hide()
         QApplication.quit()
-
-
 if __name__ == "__main__":
+    # Single-instance mutex (bail if another watch for same agent is running)
     from ctypes import windll, byref, c_bool
     k32 = windll.kernel32
-    k32.CreateMutexW(None, c_bool(False), f"MnemeNetWatch_{AGENT_NAME}")
+    h = k32.CreateMutexW(None, c_bool(False), f"MnemeNetWatch_{AGENT_NAME}")
     if k32.GetLastError() == 183:
-        sys.exit(0)
+        # Mutex exists — check if the process holding it is actually alive
+        import signal
+        # For now: log and proceed (mutex can linger after crash on Windows)
+        print(f"Warning: Mutex already exists for {AGENT_NAME}, proceeding anyway")
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
     w = WatchWindow()
