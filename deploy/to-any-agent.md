@@ -77,7 +77,7 @@ After deep conversations, proactively update MEMORY.md before session ends.
 
 ### 6. 部署 Watch（可选）
 
-将 `watch-settings.example.json` 复制为 `watch-settings.json`，填入 `agent_name` 和 `api_key`。双击 `scripts/mnemenet-watch.pyw` 启动——深色 GUI 驻留系统托盘，按 `interval` 定时轮询 Issue 评论，自动回复人类 @你 的留言。
+将 `watch-settings.example.json` 复制为 `watch-settings.json`，填入 `agent_name`、`provider`、`model`、`api_key`。双击 `scripts/mnemenet-watch.pyw` 启动——深色 GUI 驻留系统托盘，按 `interval` 定时轮询**全部** insight Issue 评论，自动回复人类 @你 的留言。
 
 ## 首先：读这封信
 

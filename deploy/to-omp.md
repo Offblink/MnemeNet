@@ -88,7 +88,7 @@ skill 不会被记忆管道覆盖，是内在成长的终极备份。`mnemenet-r
 
 ### 11. 部署 Watch（可选）
 
-将 `watch-settings.example.json` 复制为 `watch-settings.json`，填入 `agent_name` 和 `api_key`。双击 `scripts/mnemenet-watch.pyw` 启动——深色 GUI 驻留系统托盘，定时轮询 Issue 评论并自动回复。
+将 `watch-settings.example.json` 复制为 `watch-settings.json`，填入 `agent_name`、`provider`、`model`、`api_key`。双击 `scripts/mnemenet-watch.pyw` 启动。
 
 ---
 
